@@ -54,12 +54,3 @@ steps:
       pathToPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'vsix'
     displayName: 'Publish VSIX artifact'
-
-  # Optional: Create a git tag for the new version
-  - bash: |
-      git config --global user.email "azure-pipeline@yourcompany.com"
-      git config --global user.name "Azure Pipeline"
-      git tag -a "v$(NEW_VERSION)" -m "Version $(NEW_VERSION)"
-      git push origin "v$(NEW_VERSION)"
-    displayName: 'Create Git Tag'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
