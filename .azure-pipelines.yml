@@ -1,0 +1,24 @@
+trigger:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+
+- script: |
+    npm install -g vsce
+    npm install
+    vsce package
+  displayName: 'Build and Package VSCode Extension'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/vsc-mes-scaffolding-0.1.20.vsix'
+    artifact: 'VSCodeExtension'
+  displayName: 'Publish VSIX to Azure Artifacts'
