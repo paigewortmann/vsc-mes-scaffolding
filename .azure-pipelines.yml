@@ -5,28 +5,27 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-  - task: gitversion/setup@0
-    displayName: 'Setup GitVersion'
-    inputs:
-      versionSpec: '0.1.x'
-
-  - task: gitversion/execute@0
-    displayName: 'Execute GitVersion'
-
-  - task: Bash@3
-    displayName: 'Set version number in package.json'
-    inputs:
-      targetType: 'inline'
-      script: |
-        PATTERN='s/"version": "*.*.*"/"version": "'$VERSION_NUMBER'"/g'
-        sed -i "$PATTERN" package.json
-    env:
-      VERSION_NUMBER: $(GitVersion.SemVer)
-
   - task: NodeTool@0
     inputs:
       versionSpec: '20.x'
     displayName: 'Install Node.js'
+
+  - bash: |
+      # Get current version from package.json
+      CURRENT_VERSION=$(node -p "require('./package.json').version")
+      
+      # Split version into parts
+      IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
+      
+      # Increment patch version
+      PATCH=$((version_parts[2] + 1))
+      NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$PATCH"
+      
+      # Update package.json with new version
+      npm version $NEW_VERSION --no-git-tag-version
+      
+      echo "##vso[task.setvariable variable=NEW_VERSION]$NEW_VERSION"
+    displayName: 'Update Version'
 
   - script: |
       npm install -g vsce
@@ -58,4 +57,4 @@ steps:
       vstsFeedPublish: 'd7bdf2f6-a624-45ce-a264-701f6ff0cc3f/5d21d636-4e4f-4ae5-babf-051c32637bc1'
       vstsFeedPackagePublish: 'vsc-mes-scaffolding'
       versionOption: 'custom'
-      versionPublish: '$(GitVersion.SemVer)'
+      versionPublish: '$(NEW_VERSION)'
