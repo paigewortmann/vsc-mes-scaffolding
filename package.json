@@ -45,7 +45,8 @@
       "@types/react": "^19.1.6",
       "@types/vscode": "^1.100.0",
       "tslint": "^5.16.0",
-      "typescript": "^5.8.3"
+      "typescript": "^5.8.3",
+      "vscode": "^1.1.37"
    },
    "dependencies": {
       "vsc-base": "^0.9.11",

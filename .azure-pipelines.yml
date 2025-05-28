@@ -12,8 +12,11 @@ steps:
     versionSpec: '18.x'
 
 - script: |
-    npm install -g vsce
     npm install
+  displayName: 'Install Dependencies'
+
+- script: |
+    npm install -g vsce
     vsce package
   displayName: 'Build and Package VSCode Extension'
 
@@ -22,3 +25,4 @@ steps:
     targetPath: '$(Build.SourcesDirectory)/vsc-mes-scaffolding-0.1.20.vsix'
     artifact: 'VSCodeExtension'
   displayName: 'Publish VSIX to Azure Artifacts'
+Why
