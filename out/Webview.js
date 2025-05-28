@@ -15,6 +15,7 @@ exports.createTemplate = createTemplate;
 exports.initWebview = initWebview;
 const vscode_1 = require("vscode");
 const vsc = require("vsc-base");
+const path = require("path");
 function getTemplateFiles() {
     return __awaiter(this, void 0, void 0, function* () {
         const templateFiles = yield vsc.findFilePaths('**/*.vsc-template.{js,ts}');
@@ -168,10 +169,12 @@ function initWebview(context, uri) {
                     break;
             }
         }));
-        // const cssPath = Uri.file(path.join(context.extensionPath, "src", "styles.css"));
-        // const cssUri = panel.webview.asWebviewUri(cssPath);
-        const cssUri = panel.webview.asWebviewUri(vscode_1.Uri.joinPath(context.extensionUri, "/src", "styles.css"));
-        console.log(cssUri);
+        const cssPath = vscode_1.Uri.file(path.join(context.extensionPath, "src", "styles.css"));
+        const cssUri = panel.webview.asWebviewUri(cssPath);
+        // const cssUri = panel.webview.asWebviewUri(
+        //    Uri.joinPath(context.extensionUri, "/src", "styles.css")
+        // );
+        // console.log(cssUri)
         panel.webview.html = `
       
    <html>

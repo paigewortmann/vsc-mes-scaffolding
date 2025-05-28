@@ -1,27 +1,26 @@
 trigger:
-  branches:
-    include:
-      - master
+  - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: ubuntu-latest
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '18.x'
-
-- script: |
-    npm install
-  displayName: 'Install Dependencies'
-
-- script: |
-    npm install -g vsce
-    vsce package
-  displayName: 'Build and Package VSCode Extension'
-
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(Build.SourcesDirectory)/vsc-mes-scaffolding-0.1.20.vsix'
-    artifact: 'VSCodeExtension'
-  displayName: 'Publish VSIX to Azure Artifacts'
+  - task: Npm@1
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    inputs:
+      command: "custom"
+      customCommand: "install --legacy-peer-deps"
+  - task: Npm@1
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    inputs:
+      command: "custom"
+      customCommand: "run build"
+  - task: npmAuthenticate@0
+    inputs:
+      workingFile: ".npmrc"
+  - task: Npm@1
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    inputs:
+      command: "publish"
+      publishRegistry: "useFeed"
+      publishFeed: "d7bdf2f6-a624-45ce-a264-701f6ff0cc3f/5d21d636-4e4f-4ae5-babf-051c32637bc1"

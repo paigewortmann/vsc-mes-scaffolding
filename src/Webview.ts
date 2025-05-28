@@ -187,13 +187,13 @@ export async function initWebview(context: ExtensionContext, uri?: Uri) {
    });
 
 
-   // const cssPath = Uri.file(path.join(context.extensionPath, "src", "styles.css"));
-   // const cssUri = panel.webview.asWebviewUri(cssPath);
-   const cssUri = panel.webview.asWebviewUri(
-      Uri.joinPath(context.extensionUri, "/src", "styles.css")
-   );
+   const cssPath = Uri.file(path.join(context.extensionPath, "src", "styles.css"));
+   const cssUri = panel.webview.asWebviewUri(cssPath);
+   // const cssUri = panel.webview.asWebviewUri(
+   //    Uri.joinPath(context.extensionUri, "/src", "styles.css")
+   // );
 
-   console.log(cssUri)
+   // console.log(cssUri)
 
 
 
