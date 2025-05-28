@@ -8,14 +8,7 @@ export function activate(context: ExtensionContext) {
 
 	console.log('Congratulations, your extension "vsc-scaffolding" is now active!')
 
-	// const scaffolding = new Scaffolding()
 
-	// let disposable = commands.registerCommand(
-	// 	'extension.vscScaffolding',
-	// 	(uri?: Uri, uris?: Uri[]) => {
-	// 		scaffolding.createTemplate(uri)
-	// 	}
-	// )
 
 	let webviewDisposable = commands.registerCommand(
 		'extension.vscMesScaffolding',
@@ -27,9 +20,6 @@ export function activate(context: ExtensionContext) {
 
 
 	context.subscriptions.push(webviewDisposable)
-	// context.subscriptions.push(disposable)
-	// context.subscriptions.push(webviewDisposable)
-
 }
 
 export function deactivate() { }
