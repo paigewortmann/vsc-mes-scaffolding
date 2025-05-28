@@ -1,0 +1,54 @@
+{
+   "name": "vsc-mes-scaffolding",
+   "displayName": "vsc-mes-scaffolding",
+   "description": "Extention off of vsc-scaffolding to provide scaffolding for MES projects",
+   "publisher": "paigewortmann",
+   "icon": "vsc-base-icon.png",
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/alfnielsen/vsc-scaffolding"
+   },
+   "homepage": "https://github.com/alfnielsen/vsc-scaffolding",
+   "version": "0.1.20",
+   "engines": {
+      "vscode": "^1.100.0"
+   },
+   "categories": [
+      "Other"
+   ],
+   "activationEvents": [],
+   "main": "./out/extension.js",
+   "contributes": {
+      "menus": {
+         "explorer/context": [
+            {
+               "command": "extension.vscMesScaffolding",
+               "group": "1_modification",
+               "when": "explorerViewletVisible"
+            }
+         ]
+      },
+      "commands": [
+         {
+            "command": "extension.vscMesScaffolding",
+            "title": "vsc MES Scaffolding"
+         }
+      ]
+   },
+   "scripts": {
+      "vscode:prepublish": "npm run compile",
+      "compile": "tsc -p ./",
+      "watch": "tsc -watch -p ./",
+      "test": "npm run compile"
+   },
+   "devDependencies": {
+      "@types/react": "^19.1.6",
+      "@types/vscode": "^1.100.0",
+      "tslint": "^5.16.0",
+      "typescript": "^5.8.3"
+   },
+   "dependencies": {
+      "vsc-base": "^0.9.11",
+      "vsc-mes-scaffolding": "^0.1.20"
+   }
+}
