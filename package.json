@@ -9,7 +9,7 @@
       "url": "https://github.com/paigewortmann/vsc-mes-scaffolding/tree/master"
    },
    "homepage": "https://github.com/paigewortmann/vsc-mes-scaffolding/tree/master",
-   "version": "0.1.20",
+   "version": "0.1.21",
    "engines": {
       "vscode": "^1.100.0"
    },

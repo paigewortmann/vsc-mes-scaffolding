@@ -4,8 +4,6 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-name: '0.1.$(Build.BuildID)'
-
 steps:
   - task: NodeTool@0
     inputs:
