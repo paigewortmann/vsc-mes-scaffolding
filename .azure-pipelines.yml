@@ -11,22 +11,24 @@ steps:
     displayName: 'Install Node.js'
 
   - bash: |
-      # Get current version from package.json
-      if ! CURRENT_VERSION=$(node -p "require('./package.json').version"); then
-        echo "Failed to read version from package.json"
-        exit 1
+      FEED_VERSION=$(npm view vsc-mes-scaffolding version --registry=https://pkgs.dev.azure.com/mesamericas/_packaging/sms-core/npm/registry/)
+      
+      if [ $? -eq 0 ]; then
+        echo "Found version $FEED_VERSION in feed"
+        IFS='.' read -r -a version_parts <<< "$FEED_VERSION"
+        PATCH=$((version_parts[2] + 1))
+        NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$PATCH"
+      else
+        echo "Could not get version from feed, using package.json"
+        CURRENT_VERSION=$(node -p "require('./package.json').version")
+        IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
+        PATCH=$((version_parts[2] + 1))
+        NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$PATCH"
       fi
       
-      IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
+      echo "Setting version to $NEW_VERSION"
       
-      if [ ${#version_parts[@]} -ne 3 ]; then
-        echo "Invalid version format in package.json"
-        exit 1
-      fi
-      
-      PATCH=$((version_parts[2] + 1))
-      NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$PATCH"
-      
+      # Update package.json with new version
       if ! npm version $NEW_VERSION --no-git-tag-version; then
         echo "Failed to update version in package.json"
         exit 1
