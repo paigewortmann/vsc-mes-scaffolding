@@ -12,18 +12,27 @@ steps:
 
   - bash: |
       # Get current version from package.json
-      CURRENT_VERSION=$(node -p "require('./package.json').version")
+      if ! CURRENT_VERSION=$(node -p "require('./package.json').version"); then
+        echo "Failed to read version from package.json"
+        exit 1
+      fi
       
-      # Split version into parts
       IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
       
-      # Increment patch version
+      if [ ${#version_parts[@]} -ne 3 ]; then
+        echo "Invalid version format in package.json"
+        exit 1
+      fi
+      
       PATCH=$((version_parts[2] + 1))
       NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$PATCH"
       
-      # Update package.json with new version
-      npm version $NEW_VERSION --no-git-tag-version
+      if ! npm version $NEW_VERSION --no-git-tag-version; then
+        echo "Failed to update version in package.json"
+        exit 1
+      fi
       
+      echo "Successfully updated version to $NEW_VERSION"
       echo "##vso[task.setvariable variable=NEW_VERSION]$NEW_VERSION"
     displayName: 'Update Version'
 
@@ -49,12 +58,9 @@ steps:
       artifact: 'extension'
       publishLocation: 'pipeline'
 
-  - task: UniversalPackages@0
+  - task: Npm@1
     inputs:
       command: 'publish'
-      publishDirectory: '$(Build.ArtifactStagingDirectory)'
-      feedsToUsePublish: 'internal'
-      vstsFeedPublish: 'd7bdf2f6-a624-45ce-a264-701f6ff0cc3f/5d21d636-4e4f-4ae5-babf-051c32637bc1'
-      vstsFeedPackagePublish: 'vsc-mes-scaffolding'
-      versionOption: 'custom'
-      versionPublish: '$(NEW_VERSION)'
+      publishRegistry: 'useFeed'
+      publishFeed: 'd7bdf2f6-a624-45ce-a264-701f6ff0cc3f/5d21d636-4e4f-4ae5-babf-051c32637bc1'
+      publishPackageMetadata: true
