@@ -26,43 +26,24 @@ steps:
     displayName: 'NPM Authenticate'
 
   - bash: |
-      echo "Testing npm feed access..."
-      npm config list
+      echo "Checking npm feed access..."
+      FEED_VERSION=$(npm view vsc-mes-scaffolding version)
       
-      # Try to get version with retries
-      max_attempts=3
-      attempt=1
-      while [ $attempt -le $max_attempts ]; do
-        echo "Attempt $attempt to get version from feed..."
-        FEED_VERSION=$(npm view vsc-mes-scaffolding version 2>/dev/null || echo "")
-        
-        if [ ! -z "$FEED_VERSION" ]; then
-          echo "Successfully got version $FEED_VERSION from feed"
-          IFS='.' read -r -a version_parts <<< "$FEED_VERSION"
-          PATCH=$((version_parts[2] + 1))
-          NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$PATCH"
-          break
-        else
-          echo "Attempt $attempt failed"
-          if [ $attempt -eq $max_attempts ]; then
-            echo "Using package.json version after $max_attempts failed attempts"
-            CURRENT_VERSION=$(node -p "require('./package.json').version")
-            IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
-            PATCH=$((version_parts[2] + 1))
-            NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$PATCH"
-          fi
-          attempt=$((attempt + 1))
-          [ $attempt -le $max_attempts ] && sleep 5
-        fi
-      done
-      
-      echo "Setting version to $NEW_VERSION"
-      if ! npm version $NEW_VERSION --no-git-tag-version; then
-        echo "Failed to update version in package.json"
-        exit 1
+      if [ $? -eq 0 ]; then
+        echo "Found version $FEED_VERSION in feed"
+        IFS='.' read -r -a version_parts <<< "$FEED_VERSION"
+        PATCH=$((version_parts[2] + 1))
+        NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$PATCH"
+      else
+        echo "Could not get version from feed, using package.json"
+        CURRENT_VERSION=$(node -p "require('./package.json').version")
+        IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
+        PATCH=$((version_parts[2] + 1))
+        NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$PATCH"
       fi
       
-      echo "Successfully updated version to $NEW_VERSION"
+      echo "Setting version to $NEW_VERSION"
+      npm version $NEW_VERSION --no-git-tag-version || exit 1
       echo "##vso[task.setvariable variable=NEW_VERSION]$NEW_VERSION"
     displayName: 'Update Version'
 
