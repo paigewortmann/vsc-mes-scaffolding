@@ -6,9 +6,9 @@
    "icon": "vsc-base-icon.png",
    "repository": {
       "type": "git",
-      "url": "https://github.com/alfnielsen/vsc-scaffolding"
+      "url": "https://github.com/paigewortmann/vsc-mes-scaffolding/tree/master"
    },
-   "homepage": "https://github.com/alfnielsen/vsc-scaffolding",
+   "homepage": "https://github.com/paigewortmann/vsc-mes-scaffolding/tree/master",
    "version": "0.1.20",
    "engines": {
       "vscode": "^1.100.0"
